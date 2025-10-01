@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 // app/root.tsx
 
-=======
->>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
 import {
   isRouteErrorResponse,
   Links,
@@ -11,37 +8,20 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-
 import type { Route } from "./+types/root";
 import "./app.css";
-import {usePuterStore} from "~/lib/puter";
-<<<<<<< HEAD
-// --- THIS IS THE FIX ---
-// We need to import 'useEffect' from the main 'react' package.
+import { usePuterStore } from "~/lib/puter";
 import React, { useEffect } from "react";
-=======
-import {useEffect} from "react";
->>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
+  { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+  { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { init } = usePuterStore();
-
-  useEffect(() => {
-    init()
-  }, [init]);
+  useEffect(() => { init() }, [init]);
 
   return (
     <html lang="en">
@@ -72,10 +52,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
+    details = error.status === 404 ? "The requested page could not be found." : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
@@ -85,15 +62,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     <main className="pt-16 p-4 container mx-auto">
       <h1>{message}</h1>
       <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
+      {stack && (<pre className="w-full p-4 overflow-x-auto"><code>{stack}</code></pre>)}
     </main>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f

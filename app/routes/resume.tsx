@@ -9,11 +9,8 @@ import Details from "~/components/Details";
 import { SkillGap } from "~/components/SkillGap";
 import { Chatbot } from "~/components/Chatbot";
 import { MockInterview } from "~/components/MockInterview";
-import { JobRecommendations } from "~/components/JobRecommendations"; 
-<<<<<<< HEAD
-import { CareerPath } from "~/components/CareerPath"; 
-=======
->>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
+import { JobRecommendations } from "~/components/JobRecommendations";
+import { CareerPath } from "~/components/CareerPath";
 
 export const meta = () => ([
     { title: 'SkillFit | Review ' },
@@ -32,26 +29,35 @@ const Resume = () => {
 
     useEffect(() => {
         if(!isLoading && !auth.isAuthenticated) navigate(`/auth?next=/resume/${id}`);
-    }, [isLoading]);
+    }, [isLoading, auth.isAuthenticated, navigate, id]);
 
     useEffect(() => {
         const loadResume = async () => {
+            if (!id) return;
             const resume = await kv.get(`resume:${id}`);
             if(!resume) return;
             const data = JSON.parse(resume);
-            const resumeBlob = await fs.read(data.resumePath);
-            if(!resumeBlob) return;
-            const pdfBlob = new Blob([resumeBlob], { type: 'application/pdf' });
-            const resumeUrl = URL.createObjectURL(pdfBlob);
-            setResumeUrl(resumeUrl);
-            const imageBlob = await fs.read(data.imagePath);
-            if(!imageBlob) return;
-            const imageUrl = URL.createObjectURL(imageBlob);
-            setImageUrl(imageUrl);
             setFeedback(data.feedback);
-        }
+
+            if (data.resumePath) {
+                const resumeBlob = await fs.read(data.resumePath);
+                if(resumeBlob) {
+                    const pdfBlob = new Blob([resumeBlob], { type: 'application/pdf' });
+                    const resumeObjUrl = URL.createObjectURL(pdfBlob);
+                    setResumeUrl(resumeObjUrl);
+                }
+            }
+            
+            if (data.imagePath) {
+                const imageBlob = await fs.read(data.imagePath);
+                if(imageBlob) {
+                    const imageUrlObj = URL.createObjectURL(imageBlob);
+                    setImageUrl(imageUrlObj);
+                }
+            }
+        };
         loadResume();
-    }, [id]);
+    }, [id, fs, kv]);
 
     return (
         <div className="relative">
@@ -72,11 +78,7 @@ const Resume = () => {
                             </div>
                         )}
                     </section>
-<<<<<<< HEAD
-                            <section className="feedback-section">
-=======
-                  <section className="feedback-section">
->>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
+                    <section className="feedback-section">
                         <h2 className="text-4xl !text-black font-bold">Resume Review</h2>
                         {feedback ? (
                             <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
@@ -84,25 +86,13 @@ const Resume = () => {
                                 <ATS score={feedback.ATS?.score || 0} suggestions={feedback.ATS?.tips || []} />
                                 <Details feedback={feedback} />
                                 <SkillGap feedback={feedback} />
-<<<<<<< HEAD
                                 <JobRecommendations feedback={feedback} />
-                                
-                                {/* --- ADD THE NEW COMPONENT HERE --- */}
                                 <CareerPath feedback={feedback} />
-=======
-                                
-                                {/* --- ADD THE NEW COMPONENT HERE --- */}
-                                <JobRecommendations feedback={feedback} />
->>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
                             </div>
                         ) : (
                             <img src="/images/resume-scan-2.gif" className="w-full" />
                         )}
                     </section>
-<<<<<<< HEAD
-               
-=======
->>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
                 </div>
             </main>
             {feedback && (
