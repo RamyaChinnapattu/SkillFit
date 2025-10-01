@@ -25,51 +25,42 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
     const [timeLeft, setTimeLeft] = useState(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     
-    // --- THIS IS THE FIX ---
-    // This is a robust function to stop all media and timers.
     const stopAllMedia = () => {
-        // Stop any currently speaking AI voice
-        if (typeof window !== 'undefined' && window.speechSynthesis) {
-            window.speechSynthesis.cancel();
-        }
-        // Stop the interview timer
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-        }
-        // Stop the camera and microphone tracks
         if (streamRef.current) {
-            console.log("Stopping media tracks.");
             streamRef.current.getTracks().forEach(track => track.stop());
             streamRef.current = null;
         }
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
+        if (timerRef.current) clearInterval(timerRef.current);
     };
 
-    // This function is called when the close button is clicked
     const handleClose = () => {
-        stopAllMedia(); // Ensure everything stops
-        onClose();      // Then call the parent's close function
+        stopAllMedia();
+        onClose();
     };
 
-    // This useEffect hook is now only for managing the component's lifecycle
+    // This useEffect is now only for cleanup when the component unmounts.
     useEffect(() => {
-        // Setup speech recognition when the component mounts
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
         }
-
-        // This is the cleanup function that runs when the component is removed.
-        // This is the guaranteed way to turn off the camera.
+        // The return function here is the most important part for cleanup.
+        // It guarantees that when the component is closed, everything stops.
         return () => {
             stopAllMedia();
         };
-    }, []); // The empty array means this runs only once on mount and cleanup on unmount.
+    }, []); // The empty array ensures this runs only once on mount and cleanup on unmount.
 
+    // This useEffect handles the interview timer logic.
     useEffect(() => {
         if (["greeting", "asking_question", "waiting_for_answer", "listening_to_answer", "waiting_to_begin"].includes(status)) {
             timerRef.current = setInterval(() => {
                 setTimeLeft(prev => {
                     if (prev <= 1) {
+                        if(timerRef.current) clearInterval(timerRef.current);
                         handleStopInterview("Time's up!");
                         return 0;
                     }
@@ -80,7 +71,6 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
             if (timerRef.current) clearInterval(timerRef.current);
         }
     }, [status]);
-
 
     const speak = (text: string, onEnd?: () => void) => {
         if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -160,6 +150,7 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
         setStatus("greeting");
         setStatusText("Accessing camera...");
         try {
+            // Request camera access only when the user clicks "Start"
             const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             streamRef.current = mediaStream;
             if (videoRef.current) {
@@ -167,11 +158,13 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
                 videoRef.current.play().catch(console.error);
             }
 
-            setTimeLeft(duration * 60);
+            setTimeLeft(duration * 60); // Set the timer
             setStatusText("Connecting to the interviewer...");
-            const greetingPrompt = "You are a professional interviewer. Provide a brief, friendly introduction. Do not ask a question yet. For example: 'Hello, thank you for coming in today. We'll chat for about " + duration + " minutes. Are you ready to begin?'";
+            
+            const greetingPrompt = `You are a professional interviewer. Provide a brief, friendly introduction. Do not ask a question yet. For example: 'Hello, thank you for coming in today. We'll chat for about ${duration} minutes. Are you ready to begin?'`;
             const response = await ai.chat(greetingPrompt);
             if (!response?.message?.content) throw new Error("Invalid AI response");
+            
             const greeting = response.message.content as string;
             setConversation([`AI: ${greeting}`]);
             setStatusText(greeting);
