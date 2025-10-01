@@ -58,9 +58,15 @@ export function JobRecommendations({ feedback }: JobRecommendationsProps) {
 
         fetchAndGenerateJobs();
     }, [feedback, ai]);
+<<<<<<< HEAD
      return (
         // --- THIS IS THE FIX ---
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm mt-8">
+=======
+
+    return (
+        <div className="rounded-lg border bg-white p-6 shadow-sm mt-8">
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
             <h3 className="text-2xl font-bold mb-4">Example Job Postings For You</h3>
             
             {status === 'loading' && (

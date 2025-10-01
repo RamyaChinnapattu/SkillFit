@@ -20,6 +20,7 @@ const SkillList = ({ title, skills, color }: { title: string; skills: string[]; 
 
 // The main SkillGap component
 export function SkillGap({ feedback }: { feedback: any }) {
+<<<<<<< HEAD
   const skillAnalysis = feedback?.skill_gap;
 
   return (
@@ -37,6 +38,26 @@ export function SkillGap({ feedback }: { feedback: any }) {
           skills={skillAnalysis?.missing_skills}
           color="red"
         />
+=======
+  // We expect the skill gap analysis to be in feedback.skill_gap
+  const skillAnalysis = feedback?.skill_gap;
+
+  return (
+    <div className="rounded-lg border bg-white p-6 shadow-sm">
+      <h3 className="text-2xl font-bold mb-4">Skill Gap Analysis</h3>
+      <div className="space-y-6">
+
+<SkillList
+  title="✅ Skills Found on Your Resume"
+  skills={skillAnalysis?.found_skills} // No dummy data
+  color="green"
+/>
+<SkillList
+  title="❌ Skills Missing for the Job"
+  skills={skillAnalysis?.missing_skills} // No dummy data
+  color="red"
+/>
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
       </div>
     </div>
   );

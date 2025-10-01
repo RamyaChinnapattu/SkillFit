@@ -10,7 +10,10 @@ import { SkillGap } from "~/components/SkillGap";
 import { Chatbot } from "~/components/Chatbot";
 import { MockInterview } from "~/components/MockInterview";
 import { JobRecommendations } from "~/components/JobRecommendations"; 
+<<<<<<< HEAD
 import { CareerPath } from "~/components/CareerPath"; 
+=======
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
 
 export const meta = () => ([
     { title: 'SkillFit | Review ' },
@@ -69,7 +72,11 @@ const Resume = () => {
                             </div>
                         )}
                     </section>
+<<<<<<< HEAD
                             <section className="feedback-section">
+=======
+                  <section className="feedback-section">
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
                         <h2 className="text-4xl !text-black font-bold">Resume Review</h2>
                         {feedback ? (
                             <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
@@ -77,16 +84,25 @@ const Resume = () => {
                                 <ATS score={feedback.ATS?.score || 0} suggestions={feedback.ATS?.tips || []} />
                                 <Details feedback={feedback} />
                                 <SkillGap feedback={feedback} />
+<<<<<<< HEAD
                                 <JobRecommendations feedback={feedback} />
                                 
                                 {/* --- ADD THE NEW COMPONENT HERE --- */}
                                 <CareerPath feedback={feedback} />
+=======
+                                
+                                {/* --- ADD THE NEW COMPONENT HERE --- */}
+                                <JobRecommendations feedback={feedback} />
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
                             </div>
                         ) : (
                             <img src="/images/resume-scan-2.gif" className="w-full" />
                         )}
                     </section>
+<<<<<<< HEAD
                
+=======
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
                 </div>
             </main>
             {feedback && (

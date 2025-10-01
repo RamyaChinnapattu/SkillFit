@@ -52,7 +52,17 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
                 streamRef.current = mediaStream;
                 if (videoRef.current) {
                     videoRef.current.srcObject = mediaStream;
+<<<<<<< HEAD
                     videoRef.current.play().catch(console.error);
+=======
+                    
+                    // --- THIS IS THE FIX ---
+                    // We explicitly tell the video to play after receiving the stream.
+                    videoRef.current.play().catch(error => {
+                        console.error("Error attempting to play video:", error);
+                        setStatusText("Could not start video. Please click anywhere on the page and try again.");
+                    });
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
                 }
             } catch (err) {
                 setStatusText("Could not access camera. Please check permissions.");
@@ -94,6 +104,7 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
     const generateFeedback = async () => {
         setStatus("showing_results");
         setStatusText("Analyzing your performance...");
+<<<<<<< HEAD
         
         // --- THIS IS THE UPGRADED, MORE CRITICAL FEEDBACK PROMPT ---
         const feedbackPrompt = `
@@ -118,6 +129,9 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
                 "improvements": ["string", "string", ...]
             }
         `;
+=======
+        const feedbackPrompt = `Based on the interview transcript, provide feedback on clarity, confidence, and relevance. Provide a score/100, confidence level, and 3-4 improvement areas. Transcript: ${conversation.join("\n")} Format as JSON: { "overallScore": number, "confidenceLevel": "string", "improvements": ["string", ...] }`;
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
         try {
             const feedbackResponse = await ai.chat(feedbackPrompt);
             if (!feedbackResponse?.message?.content) throw new Error("Invalid AI feedback response");
@@ -131,7 +145,11 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
     const getNextQuestion = async (currentConversation: string[]) => {
         setStatus("asking_question");
         setStatusText("Thinking of the next question...");
+<<<<<<< HEAD
         const prompt = `You are a professional and friendly hiring manager conducting a supportive, medium-level mock interview. Ask one realistic interview question at a time (behavioral, technical, or situational). Based on the resume and conversation, ask the single next interview question. Resume: ${JSON.stringify(feedback)}. Conversation: ${currentConversation.join("\n")}`;
+=======
+        const prompt = `You are a professional and friendly hiring manager. Your goal is to conduct a supportive, medium-level mock interview. Do not be overly strict or ask impossibly difficult questions. Your tone is encouraging and professional. You listen to the user's answers and ask relevant follow-up questions, but you also introduce new topics from a structured list. You ask a mix of question types: behavioral ("Tell me about a time..."), technical (based on the resume), and resume-specific. Based on the resume analysis and conversation history, ask the single next interview question. Just ask the question without extra filler. Resume Analysis: ${JSON.stringify(feedback)}. Conversation History: ${currentConversation.join("\n")}`;
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
         try {
             const response = await ai.chat(prompt);
             if (!response?.message?.content) throw new Error("Invalid AI response");
@@ -171,7 +189,11 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
     const handleStopInterview = (reason: string = "Interview stopped by user.") => {
         stopAllMedia();
         setConversation(prev => [...prev, `System: ${reason}`]);
+<<<<<<< HEAD
         if (conversation.length > 0) { // Check if the interview even started
+=======
+        if (conversation.length > 1) {
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
             generateFeedback();
         } else {
             onClose();
@@ -182,7 +204,11 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
         setTimeLeft(duration * 60);
         setStatus("greeting");
         setStatusText("Connecting to the interviewer...");
+<<<<<<< HEAD
         const greetingPrompt = "You are a professional interviewer. Provide a brief, friendly introduction. Do not ask a question yet. For example: 'Hello, thank you for coming in today. We'll chat for about " + duration + " minutes. Are you ready to begin?'";
+=======
+        const greetingPrompt = "You are a professional interviewer. Please provide a brief, friendly introduction. Do not ask a question yet. For example: 'Hello, thank you for coming in today. We'll chat for about " + duration + " minutes. Are you ready to begin?'";
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
         try {
             const response = await ai.chat(greetingPrompt);
             if (!response?.message?.content) throw new Error("Invalid AI response");

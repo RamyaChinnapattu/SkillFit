@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 // app/root.tsx
 
+=======
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
 import {
   isRouteErrorResponse,
   Links,
@@ -12,9 +15,13 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import {usePuterStore} from "~/lib/puter";
+<<<<<<< HEAD
 // --- THIS IS THE FIX ---
 // We need to import 'useEffect' from the main 'react' package.
 import React, { useEffect } from "react";
+=======
+import {useEffect} from "react";
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -85,4 +92,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       )}
     </main>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1741e0456114ce1a1281cfdb0e0c60be54ada22f
