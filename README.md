@@ -25,7 +25,7 @@
 
 ## ✨ Introduction
 
-**Resumind** is a comprehensive, AI-powered web application designed to be a one-stop-shop for job seekers. Moving beyond simple resume analysis, this tool provides a full suite of features to help users not only perfect their resumes but also prepare for interviews, explore future career opportunities, and find relevant job openings. Built with a modern, serverless architecture using React and Puter.js, Resumind offers a seamless and powerful user experience.
+**SkillFit** is a comprehensive, AI-powered web application designed to be a one-stop-shop for job seekers. Moving beyond simple resume analysis, this tool provides a full suite of features to help users not only perfect their resumes but also prepare for interviews, explore future career opportunities, and find relevant job openings. Built with a modern, serverless architecture using React and Puter.js, SkillFit offers a seamless and powerful user experience.
 
 ---
 
