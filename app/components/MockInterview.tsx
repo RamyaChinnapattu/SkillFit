@@ -25,30 +25,45 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
     const [timeLeft, setTimeLeft] = useState(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     
+    // --- THIS IS THE FIX ---
+    // This is a robust function to stop all media and timers.
     const stopAllMedia = () => {
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-            streamRef.current = null;
-        }
+        // Stop any currently speaking AI voice
         if (typeof window !== 'undefined' && window.speechSynthesis) {
             window.speechSynthesis.cancel();
         }
-        if (timerRef.current) clearInterval(timerRef.current);
+        // Stop the interview timer
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+        }
+        // Stop the camera and microphone tracks
+        if (streamRef.current) {
+            console.log("Stopping media tracks.");
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+        }
     };
 
+    // This function is called when the close button is clicked
     const handleClose = () => {
-        stopAllMedia();
-        onClose();
+        stopAllMedia(); // Ensure everything stops
+        onClose();      // Then call the parent's close function
     };
 
-    // This useEffect is now only for cleanup when the component unmounts.
+    // This useEffect hook is now only for managing the component's lifecycle
     useEffect(() => {
+        // Setup speech recognition when the component mounts
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
         }
-        return () => stopAllMedia();
-    }, []);
+
+        // This is the cleanup function that runs when the component is removed.
+        // This is the guaranteed way to turn off the camera.
+        return () => {
+            stopAllMedia();
+        };
+    }, []); // The empty array means this runs only once on mount and cleanup on unmount.
 
     useEffect(() => {
         if (["greeting", "asking_question", "waiting_for_answer", "listening_to_answer", "waiting_to_begin"].includes(status)) {
@@ -64,10 +79,8 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
         } else {
             if (timerRef.current) clearInterval(timerRef.current);
         }
-        return () => {
-            if (timerRef.current) clearInterval(timerRef.current);
-        };
     }, [status]);
+
 
     const speak = (text: string, onEnd?: () => void) => {
         if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -143,8 +156,6 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
         }
     };
     
-    // --- THIS IS THE FIX ---
-    // The camera is now requested only when the user clicks "Start Interview"
     const handleStartInterview = async () => {
         setStatus("greeting");
         setStatusText("Accessing camera...");
