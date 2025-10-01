@@ -103,7 +103,7 @@ const Resume = () => {
                         </div>
                     )}
                     {isInterviewOpen && (
-                        <MockInterview feedback={feedback} onClose={() => setIsInterviewOpen(false)} />
+                        <MockInterview onClose={() => setIsInterviewOpen(false)} />
                     )}
                     <div className="flex flex-col items-end space-y-4">
                         <button onClick={() => setIsInterviewOpen(true)} className="bg-green-600 text-white rounded-full p-4 shadow-lg hover:bg-green-700 transition-transform duration-200 hover:scale-110" aria-label="Start Mock Interview" title="Start Mock Interview">
