@@ -41,27 +41,12 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
         onClose();
     };
 
+    // This useEffect is now only for cleanup when the component unmounts.
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
         }
-        const getMedia = async () => {
-            try {
-                const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                streamRef.current = mediaStream;
-                if (videoRef.current) {
-                    videoRef.current.srcObject = mediaStream;
-                    videoRef.current.play().catch(error => {
-                        console.error("Error attempting to play video:", error);
-                        setStatusText("Could not start video. Please click anywhere on the page and try again.");
-                    });
-                }
-            } catch (err) {
-                setStatusText("Could not access camera. Please check permissions.");
-            }
-        };
-        getMedia();
         return () => stopAllMedia();
     }, []);
 
@@ -158,21 +143,32 @@ export function MockInterview({ feedback, onClose }: MockInterviewProps) {
         }
     };
     
+    // --- THIS IS THE FIX ---
+    // The camera is now requested only when the user clicks "Start Interview"
     const handleStartInterview = async () => {
-        setTimeLeft(duration * 60);
         setStatus("greeting");
-        setStatusText("Connecting to the interviewer...");
-        const greetingPrompt = "You are a professional interviewer. Provide a brief, friendly introduction. Do not ask a question yet. For example: 'Hello, thank you for coming in today. We'll chat for about " + duration + " minutes. Are you ready to begin?'";
+        setStatusText("Accessing camera...");
         try {
+            const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            streamRef.current = mediaStream;
+            if (videoRef.current) {
+                videoRef.current.srcObject = mediaStream;
+                videoRef.current.play().catch(console.error);
+            }
+
+            setTimeLeft(duration * 60);
+            setStatusText("Connecting to the interviewer...");
+            const greetingPrompt = "You are a professional interviewer. Provide a brief, friendly introduction. Do not ask a question yet. For example: 'Hello, thank you for coming in today. We'll chat for about " + duration + " minutes. Are you ready to begin?'";
             const response = await ai.chat(greetingPrompt);
             if (!response?.message?.content) throw new Error("Invalid AI response");
             const greeting = response.message.content as string;
             setConversation([`AI: ${greeting}`]);
             setStatusText(greeting);
             speak(greeting, () => setStatus("waiting_to_begin"));
+
         } catch (error) {
             setStatus("not_started");
-            setStatusText("Sorry, the interviewer could not connect. Please try again.");
+            setStatusText("Could not access camera or connect to the interviewer. Please check permissions and try again.");
         }
     };
 
